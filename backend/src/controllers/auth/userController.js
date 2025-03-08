@@ -72,19 +72,12 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 // user login
 export const loginUser = asyncHandler(async (req, res) => {
-  // get email and password from req.body
-  console.log("before req.body");
   const { email, password } = req.body;
-  console.log("after req.body");
 
-  // validation
   if (!email || !password) {
-    // 400 Bad Request
-
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  // check if user exists
   const userExists = await User.findOne({ email });
 
   if (!userExists) {
@@ -95,11 +88,9 @@ export const loginUser = asyncHandler(async (req, res) => {
   const isMatch = await bcrypt.compare(password, userExists.password);
 
   if (!isMatch) {
-    // 400 Bad Request
     return res.status(400).json({ message: "Invalid credentials" });
   }
 
-  // generate token with user id
   const token = generateToken(userExists._id);
 
   if (userExists && isMatch) {
@@ -192,7 +183,6 @@ export const userLoginStatus = asyncHandler(async (req, res) => {
   const token = req.cookies.token;
 
   if (!token) {
-    // 401 Unauthorized
     res.status(401).json({ message: "Not authorized, please login!" });
   }
   // verify the token

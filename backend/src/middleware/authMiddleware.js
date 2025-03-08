@@ -7,7 +7,6 @@ export const protect = asyncHandler(async (req, res, next) => {
     // check if usr is logged in
     const token = req.cookies.token;
     if (!token) {
-      // 401 unauthorized
       return res
         .status(401)
         .json({ message: "Для этого действия необходимо быть авторизованным" });

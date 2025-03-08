@@ -14,6 +14,8 @@ const app = express();
 
 //middleware
 
+axios.defaults.withCredentials = true;
+
 const allowedOrigins = [
   "https://tasktracker-gamma-ruby.vercel.app",
   "https://tasktracker-dxdzdydxdzdys-projects.vercel.app",
