@@ -183,14 +183,16 @@ export const userLoginStatus = asyncHandler(async (req, res) => {
   const token = req.cookies.token;
 
   if (!token) {
-    res.status(401).json({ message: "Not authorized, please login!" });
+    console.log("No token found in cookies");
+    return res.status(401).json({ message: "Not authorized, please login!" });
   }
-  // verify the token
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  if (decoded) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded);
     res.status(200).json(true);
-  } else {
+  } catch (error) {
+    console.log("JWT verification error:", error);
     res.status(401).json(false);
   }
 });
