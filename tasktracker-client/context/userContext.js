@@ -93,26 +93,23 @@ export const UserContextProvider = ({ children }) => {
 
   // get user logged in status
 
-  const userLoginStatus = async () => {
-    let loggedIn = false;
-    try {
-      const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
-        withCredentials: true, // send cookies to the server
-      });
+  const userLoginStatus = asyncHandler(async (req, res) => {
+    const token = req.cookies.token;
 
-      // coerce the string to boolean
-      loggedIn = !!res.data;
-      setLoading(false);
-
-      if (!loggedIn) {
-        router.push("/login");
-      }
-    } catch (error) {
-      toast.error("Вы не авторизованы");
+    if (!token) {
+      console.log("No token found in cookies");
+      return res.status(401).json({ message: "Not authorized, please login!" });
     }
 
-    return loggedIn;
-  };
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded token:", decoded);
+      res.status(200).json(true);
+    } catch (error) {
+      console.log("JWT verification error:", error);
+      res.status(401).json(false);
+    }
+  });
 
   //logout
   const logoutUser = async () => {
@@ -139,14 +136,10 @@ export const UserContextProvider = ({ children }) => {
   //get user details
   const getUser = async () => {
     setLoading(true);
-    console.log("start of getUser");
     try {
-      console.log("enter the trycatch block before fetching responce");
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
       });
-      console.log("after fetching responce");
-      console.log(res);
 
       setUser((prevState) => {
         return {
