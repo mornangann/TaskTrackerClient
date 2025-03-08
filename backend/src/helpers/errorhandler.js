@@ -3,7 +3,7 @@ const errorHandler = (err, req, res, next) => {
   //check if res.haders have already been sent to the client
   if (res.headerSent) {
     //if true - pass thee error to rhe next error handling middleware
-    return next();
+    return next(err);
   }
 
   //set the status code of the response
