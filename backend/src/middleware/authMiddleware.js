@@ -19,7 +19,9 @@ export const protect = asyncHandler(async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     //get user details from the token ---> exclude password
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.userId || decoded.id).select(
+      "-password"
+    );
 
     //check if user exists
     if (!user) {
@@ -31,6 +33,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log("Ошибка в функции protect");
     return res
       .status(401)
       .json({ message: "Для этого действия необходимо быть авторизованным" });
