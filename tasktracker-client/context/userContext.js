@@ -352,17 +352,17 @@ export const UserContextProvider = ({ children }) => {
     }));
   };
 
-  useEffect(() => {
-    const loginStatusGetUser = async () => {
-      const isLoggedIn = await userLoginStatus();
+  // useEffect(() => {
+  //   const loginStatusGetUser = async () => {
+  //     const isLoggedIn = await userLoginStatus();
 
-      if (isLoggedIn) {
-        await getUser();
-      }
-    };
+  //     if (isLoggedIn) {
+  //       await getUser();
+  //     }
+  //   };
 
-    loginStatusGetUser();
-  }, []);
+  //   loginStatusGetUser();
+  // }, []);
 
   // useEffect(() => {
   //   if (user.role === "admin") {
