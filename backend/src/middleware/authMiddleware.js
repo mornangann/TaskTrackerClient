@@ -3,9 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/auth/UserModel.js";
 
 export const protect = asyncHandler(async (req, res, next) => {
-  console.log("protect");
   try {
-    console.log("protect");
     // check if usr is logged in
     const token = req.cookies.token;
     if (!token) {
