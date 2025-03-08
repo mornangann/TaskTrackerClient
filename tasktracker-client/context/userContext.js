@@ -2,8 +2,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState, useContext } from "react";
 import toast from "react-hot-toast";
-import express from "express";
-import asyncHandler from "express-async-handler";
 
 const UserContext = React.createContext();
 
@@ -95,7 +93,7 @@ export const UserContextProvider = ({ children }) => {
 
   // get user logged in status
 
-  const userLoginStatus = asyncHandler(async (req, res) => {
+  const userLoginStatus = async (req, res) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -111,7 +109,7 @@ export const UserContextProvider = ({ children }) => {
       console.log("JWT verification error:", error);
       res.status(401).json(false);
     }
-  });
+  };
 
   //logout
   const logoutUser = async () => {
