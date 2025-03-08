@@ -13,14 +13,29 @@ const port = process.env.PORT || 8000;
 const app = express();
 
 //middleware
+
+const allowedOrigins = [
+  "https://tasktracker-gamma-ruby.vercel.app",
+  "https://tasktracker-dxdzdydxdzdys-projects.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // Разрешить только этот домен
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }, // Разрешить только этот домен
     credentials: true, // Поддержка куки и JWT-токенов
   })
 );
 app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "tasktracker-gamma-ruby.vercel.app"
+  );
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
