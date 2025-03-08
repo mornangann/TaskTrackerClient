@@ -93,22 +93,25 @@ export const UserContextProvider = ({ children }) => {
 
   // get user logged in status
 
-  const userLoginStatus = async (req, res) => {
-    const token = req.cookies.token;
-
-    if (!token) {
-      console.log("No token found in cookies");
-      return res.status(401).json({ message: "Not authorized, please login!" });
-    }
-
+  const userLoginStatus = async () => {
+    let loggedIn = false;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded token:", decoded);
-      res.status(200).json(true);
+      const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
+        withCredentials: true, // send cookies to the server
+      });
+
+      // coerce the string to boolean
+      loggedIn = !!res.data;
+      setLoading(false);
+
+      if (!loggedIn) {
+        router.push("/login");
+      }
     } catch (error) {
-      console.log("JWT verification error:", error);
-      res.status(401).json(false);
+      toast.error("Вы не авторизованы");
     }
+
+    return loggedIn;
   };
 
   //logout
