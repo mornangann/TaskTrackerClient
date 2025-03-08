@@ -102,7 +102,7 @@ export const loginUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       sameSite: "none", // cross-site access --> allow all third-party cookies
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // true для HTTPS, false для HTTP
     });
 
     // send back the user and token in the response to the client

@@ -6,7 +6,10 @@ export const protect = asyncHandler(async (req, res, next) => {
   try {
     // check if usr is logged in
     const token = req.cookies.token;
+    console.log("Token from cookies:", token); // Логирование токена
+
     if (!token) {
+      console.log("No token found in cookies");
       return res
         .status(401)
         .json({ message: "Для этого действия необходимо быть авторизованным" });
@@ -14,6 +17,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
     //verify user
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded token:", decoded); // Логирование декодированного токена
 
     //get user details from the token ---> exclude password
     const user = await User.findById(decoded.userId || decoded.id).select(
@@ -30,7 +34,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("Ошибка в функции protect");
+    console.log("Ошибка в функции protect:", error); // Логирование ошибки
     return res
       .status(401)
       .json({ message: "Для этого действия необходимо быть авторизованным" });
