@@ -17,6 +17,7 @@ const app = express();
 const allowedOrigins = [
   "https://tasktracker-gamma-ruby.vercel.app",
   "https://tasktracker-dxdzdydxdzdys-projects.vercel.app",
+  "https://tasktracker-v4gj.onrender.com",
 ];
 
 app.use(
