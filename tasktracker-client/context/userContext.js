@@ -139,10 +139,14 @@ export const UserContextProvider = ({ children }) => {
   //get user details
   const getUser = async () => {
     setLoading(true);
+    console.log("start of getUser");
     try {
+      console.log("enter the trycatch block before fetching responce");
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
       });
+      console.log("after fetching responce");
+      console.log(res);
 
       setUser((prevState) => {
         return {
@@ -150,6 +154,8 @@ export const UserContextProvider = ({ children }) => {
           ...res.data,
         };
       });
+
+      console.log("after setUser func");
 
       setLoading(false);
     } catch (error) {
