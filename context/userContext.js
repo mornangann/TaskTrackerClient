@@ -141,26 +141,33 @@ export const UserContextProvider = ({ children }) => {
   const getUser = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token') || '';
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${token}`,
         },
       });
-      setUser((prevState) => {
-        return {
-          ...prevState,
-          ...res.data,
-        };
-      });
-
-      console.log("after setUser func");
-
+  
+      setUser(res.data);
       setLoading(false);
+      return res.data;
     } catch (error) {
-      console.log("Error getting user details", error);
+      console.error("User fetch error:", {
+        error: error.response?.data || error.message,
+        status: error.response?.status
+      });
+      
       setLoading(false);
-      toast.error("Не удаётся получить данные пользователя");
+      toast.error(error.response?.data?.message || "Ошибка получения данных");
+      
+      // Если ошибка 401 - перенаправляем на логин
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+      
+      return null;
     }
   };
 
