@@ -7,7 +7,7 @@ const UserContext = React.createContext();
 
 axios.defaults.baseURL = 'https://tasktrackerserver-7n88.onrender.com/api/v1';
 axios.defaults.withCredentials = true; // Важно!
-axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.headers.common['Accept'] = 'application/json';
 
 export const UserContextProvider = ({ children }) => {
   const serverUrl = "https://tasktrackerserver-7n88.onrender.com";
