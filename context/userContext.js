@@ -5,11 +5,10 @@ import toast from "react-hot-toast";
 
 const UserContext = React.createContext();
 
-// set axios to include credentials with every request
 axios.defaults.withCredentials = true;
 
 export const UserContextProvider = ({ children }) => {
-  const serverUrl = "https://tasktracker-v4gj.onrender.com";
+  const serverUrl = "http://localhost:8000";
 
   const router = useRouter();
 
@@ -142,8 +141,10 @@ export const UserContextProvider = ({ children }) => {
     try {
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
-
       setUser((prevState) => {
         return {
           ...prevState,
