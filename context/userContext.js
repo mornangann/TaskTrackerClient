@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 
 const UserContext = React.createContext();
 
-axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'https://tasktrackerserver-7n88.onrender.com/api/v1';
+axios.defaults.withCredentials = true; // Важно!
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export const UserContextProvider = ({ children }) => {
   const serverUrl = "https://tasktrackerserver-7n88.onrender.com";
