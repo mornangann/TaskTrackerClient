@@ -137,32 +137,59 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  //get user details
   const getUser = async () => {
     setLoading(true);
     try {
+      // 1. Проверяем наличие токена
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Токен отсутствует');
+      }
+  
+      // 2. Делаем запрос с токеном и куками
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache' // Для избежания кеширования
+        }
       });
-      setUser((prevState) => {
-        return {
-          ...prevState,
-          ...res.data,
-        };
-      });
-
-      console.log("after setUser func");
-
-      setLoading(false);
+  
+      // 3. Проверяем ответ сервера
+      if (!res.data) {
+        throw new Error('Пустой ответ от сервера');
+      }
+  
+      // 4. Обновляем состояние пользователя
+      setUser(prev => ({
+        ...prev,
+        ...res.data
+      }));
+  
+      console.log("Данные пользователя успешно получены:", res.data);
+      
     } catch (error) {
-      console.log("Error getting user details", error);
+      console.error("Ошибка получения данных пользователя:", {
+        error: error.response?.data || error.message,
+        status: error.response?.status
+      });
+  
+      // Обработка разных типов ошибок
+      if (error.response?.status === 401) {
+        // Неавторизован - удаляем токен и перенаправляем
+        localStorage.removeItem('token');
+        toast.error('Сессия истекла. Пожалуйста, войдите снова');
+        window.location.href = '/login';
+      } else if (error.response?.status === 500) {
+        toast.error('Ошибка сервера. Попробуйте позже');
+      } else {
+        toast.error('Не удалось получить данные пользователя');
+      }
+    } finally {
       setLoading(false);
-      toast.error("Не удаётся получить данные пользователя");
     }
   };
+
 
   //update user detals
   const updateUser = async (e, data) => {
@@ -367,11 +394,11 @@ export const UserContextProvider = ({ children }) => {
     loginStatusGetUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (user.role === "admin") {
-  //     getAllUsers();
-  //   }
-  // }, [user.role]);
+  useEffect(() => {
+    if (user.role === "admin") {
+      getAllUsers();
+    }
+  }, [user.role]);
 
   return (
     <UserContext.Provider
