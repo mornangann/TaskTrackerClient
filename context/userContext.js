@@ -394,11 +394,11 @@ export const UserContextProvider = ({ children }) => {
     loginStatusGetUser();
   }, []);
 
-  useEffect(() => {
-    if (user.role === "admin") {
-      getAllUsers();
-    }
-  }, [user.role]);
+  // useEffect(() => {
+  //   if (user.role === "admin") {
+  //     getAllUsers();
+  //   }
+  // }, [user.role]);
 
   return (
     <UserContext.Provider
