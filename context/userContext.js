@@ -141,7 +141,7 @@ export const UserContextProvider = ({ children }) => {
     setLoading(true);
     try {
       // 1. Проверяем наличие токена
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || '';
       if (!token) {
         throw new Error('Токен отсутствует');
       }
@@ -150,7 +150,7 @@ export const UserContextProvider = ({ children }) => {
       const res = await axios.get(`${serverUrl}/api/v1/user`, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Cache-Control': 'no-cache' // Для избежания кеширования
         }
       });
@@ -161,10 +161,14 @@ export const UserContextProvider = ({ children }) => {
       }
   
       // 4. Обновляем состояние пользователя
-      setUser(prev => ({
-        ...prev,
-        ...res.data
-      }));
+      setUser((prevState) => {
+        return {
+          ...prevState,
+          ...res.data,
+        };
+      });
+
+    
   
       console.log("Данные пользователя успешно получены:", res.data);
       
