@@ -53,146 +53,66 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  const loginUser = async (e) => {
-    e.preventDefault();
+const loginUser = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post('/api/v1/login', {
+      email: userState.email,
+      password: userState.password
+    }, {
+      withCredentials: true
+    });
 
-    if (!userState.email.trim() || !userState.password.trim()) {
-      toast.error("Заполните все поля!");
-      return;
-    }
-
-    try {
-      const res = await axios.post(
-        `${serverUrl}/api/v1/login`,
-        {
-          email: userState.email,
-          password: userState.password,
-        },
-        {
-          withCredentials: true, //отправка куки на сервер
-        }
-      );
-
-      toast.success("Вы успешно вошли в аккаунт");
-
-      // clear the form
-      setUserState({
-        email: "",
-        password: "",
-      });
-
-      // refresh the user details
-      await getUser(); // fetch before redirecting
-
-      // redirect to dashboard page
-      router.push("/");
-    } catch (error) {
-      console.log("Error logging in user", error);
-      toast.error("Неверный логин или пароль");
-    }
-  };
+    await getUser(); // Получаем данные пользователя
+    toast.success("Вы успешно вошли");
+    router.push('/');
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Ошибка входа");
+  }
+};
 
   // get user logged in status
 
-  const userLoginStatus = async () => {
-    let loggedIn = false;
-    try {
-      const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
-        withCredentials: true, // send cookies to the server
-      });
-
-      // coerce the string to boolean
-      loggedIn = !!res.data;
-      setLoading(false);
-
-      // if (!loggedIn) {
-      //   router.push("/login");
-      // }
-    } catch (error) {
-      toast.error("Вы не авторизованы");
-    }
-
-    return loggedIn;
-  };
+ const userLoginStatus = async () => {
+  try {
+    const res = await axios.get('/api/v1/login-status', {
+      withCredentials: true
+    });
+    return res.data === true;
+  } catch (error) {
+    return false;
+  }
+};
 
   //logout
-  const logoutUser = async () => {
-    try {
-      const res = await axios.get(`${serverUrl}/api/v1/logout`, {
-        withCredentials: true,
-      });
-
-      toast.success("Вы вышли из аккаунта");
-
-      // Сбрасываем состояние пользователя
-      setUser({});
-      // Очищаем localStorage
-      localStorage.removeItem("user");
-
-      //redirect to login page
-      router.push("/login");
-    } catch (error) {
-      console.log("Error logging out user", error);
-      toast.error("Ошибка выхода из аккаунта");
-    }
-  };
-
-  const getUser = async () => {
-    setLoading(true);
-    try {
-      // 1. Проверяем наличие токена
-      const token = localStorage.getItem('token') || '';
-      if (!token) {
-        throw new Error('Токен отсутствует');
-      }
-  
-      // 2. Делаем запрос с токеном и куками
-      const res = await axios.get(`${serverUrl}/api/v1/user`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Cache-Control': 'no-cache' // Для избежания кеширования
-        }
-      });
-  
-      // 3. Проверяем ответ сервера
-      if (!res.data) {
-        throw new Error('Пустой ответ от сервера');
-      }
-  
-      // 4. Обновляем состояние пользователя
-      setUser((prevState) => {
-        return {
-          ...prevState,
-          ...res.data,
-        };
-      });
-
+const logoutUser = async () => {
+  try {
+    await axios.get('/api/v1/logout', { withCredentials: true });
     
-  
-      console.log("Данные пользователя успешно получены:", res.data);
-      
-    } catch (error) {
-      console.error("Ошибка получения данных пользователя:", {
-        error: error.response?.data || error.message,
-        status: error.response?.status
-      });
-  
-      // Обработка разных типов ошибок
-      if (error.response?.status === 401) {
-        // Неавторизован - удаляем токен и перенаправляем
-        localStorage.removeItem('token');
-        toast.error('Сессия истекла. Пожалуйста, войдите снова');
-        window.location.href = '/login';
-      } else if (error.response?.status === 500) {
-        toast.error('Ошибка сервера. Попробуйте позже');
-      } else {
-        toast.error('Не удалось получить данные пользователя');
-      }
-    } finally {
-      setLoading(false);
+    // Полная очистка состояния
+    setUser({});
+    localStorage.removeItem('user');
+    
+    // Принудительный редирект с обновлением страницы
+    window.location.href = '/login';
+  } catch (error) {
+    toast.error("Ошибка выхода");
+    window.location.href = '/login';
+  }
+};
+
+const getUser = async () => {
+  try {
+    const res = await axios.get('/api/v1/user', {
+      withCredentials: true
+    });
+    setUser(res.data);
+  } catch (error) {
+    if (error.response?.status === 401) {
+      window.location.href = '/login';
     }
-  };
+  }
+};
 
 
   //update user detals
