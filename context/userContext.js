@@ -16,6 +16,7 @@ export const UserContextProvider = ({ children }) => {
 
   const [user, setUser] = useState({});
   const [allUsers, setAllUsers] = useState([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [userState, setUserState] = useState({
     name: "",
     email: "",
@@ -73,19 +74,24 @@ const loginUser = async (e) => {
 
   // get user logged in status
 
- const userLoginStatus = async () => {
+const userLoginStatus = async () => {
+  if (isLoggingOut) return false;
+  
   try {
     const res = await axios.get('/api/v1/login-status', {
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
     });
     return res.data === true;
   } catch (error) {
     return false;
   }
 };
-
   //logout
 const logoutUser = async () => {
+  setIsLoggingOut(true);
   try {
     // 1. Отправляем запрос на выход
     await axios.get('/api/v1/logout', { 
