@@ -80,9 +80,7 @@ const userLoginStatus = async () => {
   try {
     const res = await axios.get('/api/v1/login-status', {
       withCredentials: true,
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
+   
     });
     return res.data === true;
   } catch (error) {
@@ -96,9 +94,7 @@ const logoutUser = async () => {
     // 1. Отправляем запрос на выход
     await axios.get('/api/v1/logout', { 
       withCredentials: true,
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
+     
     });
 
     // 2. Полный сброс состояния
