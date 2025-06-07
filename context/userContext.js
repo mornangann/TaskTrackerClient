@@ -56,7 +56,7 @@ export const UserContextProvider = ({ children }) => {
 const loginUser = async (e) => {
   e.preventDefault();
   try {
-    const res = await axios.post('/api/v1/login', {
+    const res = await axios.post('/login', {
       email: userState.email,
       password: userState.password
     }, {
