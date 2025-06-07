@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const UserContext = React.createContext();
 
-axios.defaults.baseURL = 'https://tasktrackerserver-7n88.onrender.com/api/v1';
+axios.defaults.baseURL = 'https://tasktrackerserver-7n88.onrender.com';
 axios.defaults.withCredentials = true; // Важно!
 axios.defaults.headers.common['Accept'] = 'application/json';
 
@@ -56,7 +56,7 @@ export const UserContextProvider = ({ children }) => {
 const loginUser = async (e) => {
   e.preventDefault();
   try {
-    const res = await axios.post('/login', {
+    const res = await axios.post('/api/v1/login', {
       email: userState.email,
       password: userState.password
     }, {
