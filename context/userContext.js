@@ -87,17 +87,29 @@ const loginUser = async (e) => {
   //logout
 const logoutUser = async () => {
   try {
-    await axios.get('/api/v1/logout', { withCredentials: true });
-    
-    // Полная очистка состояния
+    // 1. Отправляем запрос на выход
+    await axios.get('/api/v1/logout', { 
+      withCredentials: true,
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    });
+
+    // 2. Полный сброс состояния
     setUser({});
-    localStorage.removeItem('user');
+    localStorage.clear();
+    sessionStorage.clear();
     
-    // Принудительный редирект с обновлением страницы
-    window.location.href = '/login';
+    // 3. Отменяем все pending запросы
+    const source = axios.CancelToken.source();
+    source.cancel('User logged out');
+    
+    // 4. Принудительная перезагрузка с очисткой истории
+    window.location.assign('/login');
+    
   } catch (error) {
-    toast.error("Ошибка выхода");
-    window.location.href = '/login';
+    // 5. В любом случае делаем перезагрузку
+    window.location.assign('/login');
   }
 };
 
