@@ -118,7 +118,7 @@ function MiniSideBar() {
       link: "/overdue",
     },
      {
-      icon: <IconFolders strokeColor={getStrokeColor("/overdue")} />,
+      icon: <IconFolders strokeColor={getStrokeColor("/groups")} />,
       title: "Группы задач",
       link: "/groups",
     },
