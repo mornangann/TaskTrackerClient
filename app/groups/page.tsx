@@ -31,12 +31,12 @@ export default function Home() {
       </div>
 
       <motion.div
-        className="pb-[2rem] mt-6 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[1.5rem]"
+        className="pb-[2rem] mt-6 flex justify-center items-center h-[60vh]"
         variants={container}
         initial="hidden"
         animate="visible"
       >
-       <h2>В разработке</h2>
+       <h2  className="text-4xl font-semibold text-tttext text-center">В разработке</h2>
       </motion.div>
     </main>
   );
