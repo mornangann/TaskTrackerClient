@@ -27,7 +27,7 @@ export default function Home() {
         <h1 className="text-[2rem] text-tttext   font-bold">
           Группы задач
         </h1>
-        <Filters />
+       
       </div>
 
       <motion.div
@@ -36,16 +36,7 @@ export default function Home() {
         initial="hidden"
         animate="visible"
       >
-        {filtered?.map((task: Task, i: number) => (
-          <TaskItem key={i} task={task} />
-        ))}
-        <motion.button
-          className="h-[16rem] w-full py-2 rounded-md text-lg font-medium text-tttextsec add-task"
-          onClick={openModalForAdd}
-          variants={item}
-        >
-          {plusTask}
-        </motion.button>
+       <h2>В разработке</h2>
       </motion.div>
     </main>
   );
