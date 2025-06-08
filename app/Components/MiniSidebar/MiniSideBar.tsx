@@ -130,7 +130,7 @@ function MiniSideBar() {
         <Image src="/logo.svg" width={40} height={40} alt="logo" />
       </div>
       <div className="mt-8 flex flex-1 flex-col items-center justify-between">
-        <ul className="flex flex-col gap-10">
+        <ul className="flex flex-col gap-8">
           {navItems.map((item, index) => (
             <li key={index} className="relative group">
               <Link
