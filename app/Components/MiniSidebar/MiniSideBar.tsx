@@ -79,6 +79,7 @@ import { useTasks } from "@/context/taskContext";
 import IconCheck from "@/public/icons/IconCheck";
 import IconDeleteAll from "@/public/icons/IconDeleteAll";
 import IconFileCheck from "@/public/icons/IconFileCheck";
+import IconFolders from "@/public/icons/IconFolders";
 import IconGrid from "@/public/icons/IconGrid";
 import IconStopwatch from "@/public/icons/IconStopwatch";
 import Image from "next/image";
@@ -115,6 +116,11 @@ function MiniSideBar() {
       icon: <IconStopwatch strokeColor={getStrokeColor("/overdue")} />,
       title: "Истёкшие",
       link: "/overdue",
+    },
+     {
+      icon: <IconFolders strokeColor={getStrokeColor("/groups")} />,
+      title: "Группы задач",
+      link: "/groups",
     },
   ];
 
